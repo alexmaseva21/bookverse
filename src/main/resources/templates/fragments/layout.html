@@ -3,51 +3,55 @@
 <head th:fragment="head">
     <meta charset="UTF-8">
     <title>BookVerse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/load/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-violet: #6f42c1;
-            --dark-violet: #4c2885;
-            --light-violet: #f3eefb;
-            --accent-pink: #d63384;
-        }
+        /* The entire app now uses a beautiful, soft pale purple tint */
         body {
-            background-color: #fdfbfe;
+            background-color: #F3E8FF;
+            color: #3B0764;
+            min-height: 100vh;
         }
-        .bg-violet {
-            background-color: var(--primary-violet) !important;
+
+        /* The bold, solid dark purple header navigation block */
+        .bg-dark-purple {
+            background-color: #4C1D95 !important;
         }
-        .btn-violet {
-            background-color: var(--primary-violet);
+
+        .navbar-brand, .nav-link {
+            color: #F3E8FF !important;
+        }
+
+        .nav-link:hover {
+            color: #C084FC !important;
+        }
+
+        /* Clean contrast cards for form structures */
+        .card-custom {
+            background-color: #FFFFFF;
+            border: 1px solid #D8B4FE;
+            border-radius: 12px;
+        }
+
+        .btn-purple {
+            background-color: #6D28D9;
             color: white;
         }
-        .btn-violet:hover {
-            background-color: var(--dark-violet);
+
+        .btn-purple:hover {
+            background-color: #5B21B6;
             color: white;
-        }
-        .text-violet {
-            color: var(--primary-violet);
-        }
-        /* Server-side validation error styles */
-        .validation-error {
-            color: #dc3545;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
         }
     </style>
 </head>
 <body>
 
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-violet shadow-sm">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg bg-dark-purple shadow-sm mb-4">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="#">🔮 BookVerse</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Explore</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">My Lists</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Challenges</a></li>
-            </ul>
+        <a class="navbar-brand fw-bold" href="/">🔮 BookVerse</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/users/login">Login</a>
+            <a class="nav-link" href="/users/register">Register</a>
+            <a class="nav-link" href="/books/explore">Explore</a>
         </div>
     </div>
 </nav>
