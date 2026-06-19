@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container mt-5">
+    <div class="p-5 mb-4 bg-light-violet rounded-3 shadow-sm border">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-4 fw-bold text-violet">Welcome to BookVerse 🔮</h1>
+            <p class="col-md-8 fs-4 mx-auto text-muted">
+                Your personal community book tracker. Create reading lists, leave reviews, and challenge your reading goals.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+                <button class="btn btn-violet btn-lg px-4 gap-3" type="button">Explore Books</button>
+                <button class="btn btn-outline-secondary btn-lg px-4" type="button">Join a Challenge</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
