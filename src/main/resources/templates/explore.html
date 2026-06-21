@@ -16,6 +16,15 @@
         <p class="text-muted">Discover new genres, read synopses, and expand your horizons.</p>
     </div>
 
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <form th:action="@{/books/explore}" method="GET" class="d-flex gap-2">
+                <input type="text" name="keyword" th:value="${keyword}" class="form-control py-2 rounded-pill shadow-sm border-0 px-4" placeholder="🔍 Search by book title...">
+                <button type="submit" class="btn btn-purple px-4 rounded-pill fw-bold shadow-sm">Search</button>
+            </form>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-md-4" th:each="book : ${allBooks}">
             <div class="card h-100 border-0 shadow-sm p-4 rounded-4" style="background: white;">
@@ -29,7 +38,7 @@
                 <p class="text-secondary small flex-grow-1" th:text="${book.description}">Short book summary description goes right over here...</p>
 
                 <div class="mt-3 pt-3 border-top d-flex gap-2">
-                    <a href="/reviews/new" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill">✍️ Review</a>
+                    <a th:href="@{/reviews/new(bookId=${book.id})}" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill">✍️ Review</a>
                     <button class="btn btn-outline-secondary btn-sm w-100 fw-bold rounded-pill">➕ Add to Shelf</button>
                 </div>
             </div>
