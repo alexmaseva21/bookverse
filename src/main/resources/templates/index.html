@@ -2,64 +2,141 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>BookVerse - Home</title>
+    <title>BookVerse - Your Literary Cosmos</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <div th:replace="~{fragments/layout :: head}"></div>
+    <style>
+        .hero-banner {
+            /* Blends your rich purple gradient seamlessly over your custom cosmic background image */
+            background: linear-gradient(rgba(76, 29, 149, 0.65), rgba(46, 16, 101, 0.9)),
+                        url('/images/hero-bg.avif') no-repeat center center;
+            background-size: cover;
+            border-radius: 0 0 32px 32px;
+            min-height: 45vh;
+            display: flex;
+            align-items: center;
+        }
+        .feature-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: white;
+            border: 1px solid #F3E8FF;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(76, 29, 149, 0.08) !important;
+        }
+        .icon-box {
+            width: 55px;
+            height: 55px;
+            background-color: #F3E8FF;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .review-card {
+            border-left: 4px solid #A78BFA;
+            background: #FAF5FF;
+        }
+    </style>
 </head>
-<body>
+<body style="background-color: #FAF5FF;">
 
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-<div class="container-fluid py-5 d-flex align-items-center"
-     style="background: linear-gradient(rgba(76, 29, 149, 0.6), rgba(59, 7, 100, 0.85)), url('/images/hero-bg.avif') no-repeat center center; background-size: cover; min-height: 55vh; border-radius: 0 0 24px 24px;">
-
-    <div class="container text-center text-white py-4">
-
-        <div th:if="${session.currentUser != null}">
-            <h1 class="display-3 fw-bold mb-3">Welcome back, <span class="text-glow" th:text="${session.currentUser}">Reader</span>! ✨</h1>
-            <p class="lead fs-4 opacity-90 mx-auto mb-4" style="max-width: 600px;">
-                Your literary cosmos awaits. Ready to log your current page or dive into a new challenge?
-            </p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="/books/my-lists" class="btn btn-light fw-bold px-4 py-2 text-purple rounded-pill shadow">My Shelves</a>
-                <a href="/challenges" class="btn btn-outline-light fw-bold px-4 py-2 rounded-pill">Active Goals</a>
-            </div>
-        </div>
-
-        <div th:unless="${session.currentUser != null}">
-            <h1 class="display-4 fw-bold mb-3">Step Into <span class="text-glow">BookVerse</span></h1>
-            <p class="lead opacity-75 mx-auto mb-4" style="max-width: 650px;">
-                The ultimate enchanted destination to track your reading journey, compile personal shelves, and share reviews within a universe built entirely for book lovers.
-            </p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="/users/register" class="btn btn-purple fw-bold px-4 py-2 rounded-pill shadow">Create Free Account</a>
-                <a href="/books/explore" class="btn btn-outline-light fw-bold px-4 py-2 rounded-pill">Explore Catalog</a>
-            </div>
-        </div>
-
+<div class="hero-banner text-white py-5 mb-5 shadow-sm">
+    <div class="container text-center py-4">
+        <h1 class="display-4 fw-bold mb-3" th:if="${username == null}">Welcome to BookVerse ✨</h1>
+        <h1 class="display-4 fw-bold mb-3" th:if="${username != null}">
+            Welcome back, <span class="text-glow" style="color: #E9D5FF;" th:text="${username}">Reader</span>! ✨
+        </h1>
+        <p class="lead opacity-90 mx-auto" style="max-width: 600px;">
+            Your literary cosmos awaits. Ready to log your current page, browse community insights, or dive into a brand new universe?
+        </p>
     </div>
 </div>
 
-<div class="container my-5">
-    <h3 class="text-center fw-bold mb-4" style="color: #4C1D95;">Explore the Features</h3>
+<div class="container mb-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: #3B0764;">Explore the Cosmos</h2>
+        <p class="text-muted small">Manage your reading journey and connect with fellow cosmic travelers.</p>
+    </div>
+
     <div class="row g-4 justify-content-center">
-
         <div class="col-md-4">
-            <div class="card p-4 text-center border-0 shadow-sm h-100" style="background: white; border-radius: 16px;">
-                <div class="fs-1 mb-2">📚</div>
-                <h5 class="fw-bold" style="color: #4C1D95;">Digital Reading Logs</h5>
-                <p class="text-muted small mb-0">Organize your reading into custom lists: Want to Read, Reading, and Completed.</p>
+            <div class="card feature-card h-100 p-4 shadow-sm rounded-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="icon-box" style="background-color: #F3E8FF; color: #6D28D9;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                            <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .58.487c1.334-.234 2.97-.506 4.14-.506 1.03 0 2.007.135 2.75.395l.893-.333a.5.5 0 0 0 .137-.089l.577-.198V1.783z"/>
+                        </svg>
+                    </div>
+                    <h5 class="fw-bold m-0" style="color: #4C1D95;">My Shelves</h5>
+                </div>
+                <p class="text-secondary small flex-grow-1">Organize your reading into custom lists. Track what you Want to Read, are Reading, or have Completed.</p>
+                <a href="/shelves" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill mt-2">Open Shelves</a>
             </div>
         </div>
 
         <div class="col-md-4">
-            <div class="card p-4 text-center border-0 shadow-sm h-100" style="background: white; border-radius: 16px;">
-                <div class="fs-1 mb-2">⭐</div>
-                <h5 class="fw-bold" style="color: #4C1D95;">Community Reviews</h5>
-                <p class="text-muted small mb-0">Share your thoughts on recent plots and see what other readers are saying globally.</p>
+            <div class="card feature-card h-100 p-4 shadow-sm rounded-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="icon-box" style="background-color: #F3E8FF; color: #6D28D9;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
+                            <path d="M7.657 6.247c.11-.33.576-.33.686 0l.545 1.636a.343.343 0 0 0 .327.234l1.718.007c.348.001.493.448.21.653l-1.39 1.007a.343.343 0 0 0-.125.385l.534 1.643c.109.337-.278.618-.56.41L8.32 11.23a.343.343 0 0 0-.404 0l-1.428 1.037c-.282.205-.67-.076-.56-.41l.534-1.643a.343.343 0 0 0-.124-.385l-1.39-1.007c-.283-.205-.138-.652.21-.653l1.718-.007a.343.343 0 0 0 .328-.234l.545-1.636zM1.5 3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H2a.5.5 0 0 1-.5-.5zm0 10a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H2a.5.5 0 0 1-.5-.5zm11.5-10a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0 10a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </div>
+                    <h5 class="fw-bold m-0" style="color: #4C1D95;">Active Goals</h5>
+                </div>
+                <p class="text-secondary small flex-grow-1">Set annual book challenges, track your daily page logs, and celebrate milestones along the journey.</p>
+                <a href="/goals" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill mt-2">View Goals</a>
             </div>
         </div>
 
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4 shadow-sm rounded-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="icon-box" style="background-color: #F3E8FF; color: #6D28D9;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-search-heart" viewBox="0 0 16 16">
+                            <path d="M6.5 4.482c1.664-1.673 5.825 1.254 0 5.018-5.825-3.764-1.664-6.69 0-5.018Z"/>
+                            <path d="M13 6.5a6.471 6.471 0 0 1-1.258 3.844c.04.03.078.068.108.108l3.5 3.5a.5.5 0 0 1-.708.708l-3.5-3.5a.534.534 0 0 1-.108-.108A6.5 6.5 0 1 1 13 6.5Zm-1.1 0a5.4 5.4 0 1 0-10.8 0 5.4 5.4 0 0 0 10.8 0Z"/>
+                        </svg>
+                    </div>
+                    <h5 class="fw-bold m-0" style="color: #4C1D95;">Explore Catalog</h5>
+                </div>
+                <p class="text-secondary small flex-grow-1">Scan through our multi-genre cosmic repository, filter by titles, and discover what to read next.</p>
+                <a href="/books/explore" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill mt-2">Launch Telescope</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <hr class="my-5 opacity-10">
+    <div class="mb-4">
+        <h3 class="fw-bold" style="color: #3B0764;">💫 Recent Global Activity</h3>
+        <p class="text-muted small">See what other readers are saying across the BookVerse universe right now.</p>
+    </div>
+
+    <div class="text-center py-4 bg-white rounded-4 shadow-sm p-4 border" th:if="${#lists.isEmpty(globalReviews)}" style="border-color: #F3E8FF !important;">
+        <p class="text-muted m-0">The review galaxy is quiet tonight. Be the first to leave a cosmic thought! ✍️</p>
+    </div>
+
+    <div class="row g-3" th:if="${!#lists.isEmpty(globalReviews)}">
+        <div class="col-100" th:each="review : ${globalReviews}">
+            <div class="card review-card border-0 p-4 shadow-sm rounded-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                    <div>
+                        <h5 class="fw-bold mb-0" style="color: #4C1D95;"
+                            th:text="${review.book != null ? review.book.title : 'General Thought'}">Book Title</h5>
+                        <span class="text-muted small">Reviewed by <strong class="text-secondary" th:text="${review.user.username}">User</strong></span>
+                    </div>
+                    <span class="fs-5" th:text="${'⭐'.repeat(review.stars)}">⭐⭐⭐⭐⭐</span>
+                </div>
+                <p class="text-secondary m-0 small" style="white-space: pre-line;" th:text="${review.content}">Review paragraph text goes right here...</p>
+            </div>
+        </div>
     </div>
 </div>
 
