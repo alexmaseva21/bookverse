@@ -25,25 +25,25 @@
             <h2 class="fw-bold mb-3" style="color: #4C1D95;">Create Account</h2>
             <p class="text-muted small mb-4">Please fill out your details below to get started.</p>
 
-            <form th:action="@{/users/register}" method="POST">
+            <form th:action="@{/users/register}" th:object="${registerDTO}" method="POST">
                 <div class="mb-3">
                     <label for="username" class="form-label fw-semibold small">Username</label>
-                    <input type="text" class="form-control py-2" id="username" name="username" placeholder="Choose a username" required>
+                    <input th:field="*{username}" type="text" class="form-control py-2" id="username" placeholder="Choose a username" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="email" class="form-label fw-semibold small">Email Address</label>
-                    <input type="email" class="form-control py-2" id="email" name="email" placeholder="name@example.com" required>
+                    <input th:field="*{email}" type="email" class="form-control py-2" id="email" placeholder="name@example.com" required>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label fw-semibold small">Password</label>
-                    <input type="password" class="form-control py-2" id="password" name="password" placeholder="Min 3 characters" required>
+                    <input th:field="*{password}" type="password" class="form-control py-2" id="password" placeholder="Min 3 characters" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="confirmPassword" class="form-label fw-semibold small">Confirm Password</label>
-                    <input type="password" class="form-control py-2" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password" required>
+                    <input th:field="*{confirmPassword}" type="password" class="form-control py-2" id="confirmPassword" placeholder="Repeat your password" required>
                 </div>
 
                 <button type="submit" class="btn btn-purple w-100 fw-bold py-2 shadow-sm">Sign Up</button>
