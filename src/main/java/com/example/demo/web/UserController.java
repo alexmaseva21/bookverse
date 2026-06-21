@@ -1,6 +1,9 @@
 package com.example.demo.web;
 
+import com.example.demo.model.dto.UserLoginDTO;
 import com.example.demo.model.dto.UserRegisterDTO;
+import com.example.demo.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,8 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.example.demo.service.UserService;
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -21,34 +22,44 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Bind an empty DTO to the registration form model tree
-    @ModelAttribute("registerDTO")
-    public UserRegisterDTO registerDTO() {
-        return new UserRegisterDTO();
-    }
-
-    @GetMapping("/register")
-    public String register() {
-        return "register";
-    }
-
-    // Handles form data submission from the "Sign Up" button
-    @PostMapping("/register")
-    public String registerConfirm(@Valid UserRegisterDTO registerDTO,
-                                  BindingResult bindingResult,
-                                  RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors() || !userService.register(registerDTO)) {
-            redirectAttributes.addFlashAttribute("registerDTO", registerDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDTO", bindingResult);
-            return "redirect:/users/register"; // Redirects back with errors if validation fails
-        }
-
-        return "redirect:/users/login"; // Success! Send them straight to login page
+    @ModelAttribute("loginDTO")
+    public UserLoginDTO loginDTO() {
+        return new UserLoginDTO();
     }
 
     @GetMapping("/login")
     public String login() {
         return "login";
+    }
+
+    // Handles data when clicking the "Log In" button
+    @PostMapping("/login")
+    public String loginConfirm(@Valid UserLoginDTO loginDTO,
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors() || !userService.login(loginDTO)) {
+            redirectAttributes.addFlashAttribute("loginDTO", loginDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginDTO", bindingResult);
+            return "redirect:/users/login"; // Reloads with error flags if authentication fails
+        }
+
+        return "redirect:/"; // Success! Send them to the Home Page index view
+    }
+
+    @ModelAttribute("registerDTO")
+    public UserRegisterDTO registerDTO() { return new UserRegisterDTO(); }
+
+    @GetMapping("/register")
+    public String register() { return "register"; }
+
+    @PostMapping("/register")
+    public String registerConfirm(@Valid com.example.demo.model.dto.UserRegisterDTO registerDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors() || !userService.register(registerDTO)) {
+            redirectAttributes.addFlashAttribute("registerDTO", registerDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDTO", bindingResult);
+            return "redirect:/users/register";
+        }
+        return "redirect:/users/login";
     }
 }
