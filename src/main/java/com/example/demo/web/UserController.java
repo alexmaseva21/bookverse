@@ -3,6 +3,7 @@ package com.example.demo.web;
 import com.example.demo.model.dto.UserLoginDTO;
 import com.example.demo.model.dto.UserRegisterDTO;
 import com.example.demo.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -36,30 +37,48 @@ public class UserController {
     @PostMapping("/login")
     public String loginConfirm(@Valid UserLoginDTO loginDTO,
                                BindingResult bindingResult,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               HttpSession session) { // Tracks active browser login state
 
         if (bindingResult.hasErrors() || !userService.login(loginDTO)) {
             redirectAttributes.addFlashAttribute("loginDTO", loginDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginDTO", bindingResult);
-            return "redirect:/users/login"; // Reloads with error flags if authentication fails
+            return "redirect:/users/login";
         }
 
-        return "redirect:/"; // Success! Send them to the Home Page index view
+        // Success! Stores the username session attribute for the index page banner to read
+        session.setAttribute("currentUser", loginDTO.getUsername());
+
+        return "redirect:/";
     }
 
     @ModelAttribute("registerDTO")
-    public UserRegisterDTO registerDTO() { return new UserRegisterDTO(); }
+    public UserRegisterDTO registerDTO() {
+        return new UserRegisterDTO();
+    }
 
     @GetMapping("/register")
-    public String register() { return "register"; }
+    public String register() {
+        return "register";
+    }
 
     @PostMapping("/register")
-    public String registerConfirm(@Valid com.example.demo.model.dto.UserRegisterDTO registerDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String registerConfirm(@Valid UserRegisterDTO registerDTO,
+                                  BindingResult bindingResult,
+                                  RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors() || !userService.register(registerDTO)) {
             redirectAttributes.addFlashAttribute("registerDTO", registerDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDTO", bindingResult);
             return "redirect:/users/register";
         }
         return "redirect:/users/login";
+    }
+
+    // Clears out the user session variables when navigating to /users/logout
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 }

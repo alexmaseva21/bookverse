@@ -1,22 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head}"></head>
+<head>
+    <meta charset="UTF-8">
+    <title>BookVerse - Home</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <div th:replace="~{fragments/layout :: head}"></div>
+</head>
 <body>
 
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-<div class="container mt-5">
-    <div class="p-5 mb-4 bg-light-violet rounded-3 shadow-sm border">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-4 fw-bold text-violet">Welcome to BookVerse 🔮</h1>
-            <p class="col-md-8 fs-4 mx-auto text-muted">
-                Your personal community book tracker. Create reading lists, leave reviews, and challenge your reading goals.
+<div class="container-fluid py-5 d-flex align-items-center"
+     style="background: linear-gradient(rgba(76, 29, 149, 0.6), rgba(59, 7, 100, 0.85)), url('/images/hero-bg.avif') no-repeat center center; background-size: cover; min-height: 55vh; border-radius: 0 0 24px 24px;">
+
+    <div class="container text-center text-white py-4">
+
+        <div th:if="${session.currentUser != null}">
+            <h1 class="display-3 fw-bold mb-3">Welcome back, <span class="text-glow" th:text="${session.currentUser}">Reader</span>! ✨</h1>
+            <p class="lead fs-4 opacity-90 mx-auto mb-4" style="max-width: 600px;">
+                Your literary cosmos awaits. Ready to log your current page or dive into a new challenge?
             </p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
-                <button class="btn btn-violet btn-lg px-4 gap-3" type="button">Explore Books</button>
-                <button class="btn btn-outline-secondary btn-lg px-4" type="button">Join a Challenge</button>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/books/my-lists" class="btn btn-light fw-bold px-4 py-2 text-purple rounded-pill shadow">My Shelves</a>
+                <a href="/challenges" class="btn btn-outline-light fw-bold px-4 py-2 rounded-pill">Active Goals</a>
             </div>
         </div>
+
+        <div th:unless="${session.currentUser != null}">
+            <h1 class="display-4 fw-bold mb-3">Step Into <span class="text-glow">BookVerse</span></h1>
+            <p class="lead opacity-75 mx-auto mb-4" style="max-width: 650px;">
+                The ultimate enchanted destination to track your reading journey, compile personal shelves, and share reviews within a universe built entirely for book lovers.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/users/register" class="btn btn-purple fw-bold px-4 py-2 rounded-pill shadow">Create Free Account</a>
+                <a href="/books/explore" class="btn btn-outline-light fw-bold px-4 py-2 rounded-pill">Explore Catalog</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container my-5">
+    <h3 class="text-center fw-bold mb-4" style="color: #4C1D95;">Explore the Features</h3>
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center border-0 shadow-sm h-100" style="background: white; border-radius: 16px;">
+                <div class="fs-1 mb-2">📚</div>
+                <h5 class="fw-bold" style="color: #4C1D95;">Digital Reading Logs</h5>
+                <p class="text-muted small mb-0">Organize your reading into custom lists: Want to Read, Reading, and Completed.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center border-0 shadow-sm h-100" style="background: white; border-radius: 16px;">
+                <div class="fs-1 mb-2">⭐</div>
+                <h5 class="fw-bold" style="color: #4C1D95;">Community Reviews</h5>
+                <p class="text-muted small mb-0">Share your thoughts on recent plots and see what other readers are saying globally.</p>
+            </div>
+        </div>
+
     </div>
 </div>
 

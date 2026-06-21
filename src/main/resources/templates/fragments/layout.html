@@ -41,17 +41,40 @@
             background-color: #5B21B6;
             color: white;
         }
+
+                /* Translucent glass card that looks amazing over dark background images */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            color: white;
+        }
+
+        /* Accent text color to match the bright glowing inner pages */
+        .text-glow {
+            color: #E0AAFF;
+            text-shadow: 0 0 10px rgba(224, 170, 255, 0.5);
+        }
     </style>
 </head>
 <body>
 
-<nav th:fragment="navbar" class="navbar navbar-expand-lg bg-dark-purple shadow-sm mb-4">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg bg-dark-purple shadow-sm mb-0">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/">🔮 BookVerse</a>
         <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/users/login">Login</a>
-            <a class="nav-link" href="/users/register">Register</a>
-            <a class="nav-link" href="/books/explore">Explore</a>
+            <th:block th:if="${session.currentUser == null}">
+                <a class="nav-link" href="/users/login">Login</a>
+                <a class="nav-link" href="/users/register">Register</a>
+            </th:block>
+
+            <th:block th:if="${session.currentUser != null}">
+                <a class="nav-link" href="/books/explore">Explore</a>
+                <a class="nav-link" href="/reviews/new" style="color: #E0AAFF !important; font-weight: bold;">✍️ Write Review</a>
+                <a class="nav-link" href="/users/logout">Logout</a>
+            </th:block>
         </div>
     </div>
 </nav>
