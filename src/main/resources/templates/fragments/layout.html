@@ -3,16 +3,23 @@
 <head th:fragment="head">
     <meta charset="UTF-8">
     <title>BookVerse</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/load/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* The entire app now uses a beautiful, soft pale purple tint */
         body {
             background-color: #F3E8FF;
             color: #3B0764;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* The bold, solid dark purple header navigation block */
+        /* Forces footer to stick perfectly to the bottom of pages with low content density */
+        .main-wrapper {
+            flex: 1 0 auto;
+        }
+
+        /* The bold, solid dark purple header & footer block */
         .bg-dark-purple {
             background-color: #4C1D95 !important;
         }
@@ -42,7 +49,7 @@
             color: white;
         }
 
-                /* Translucent glass card that looks amazing over dark background images */
+        /* Translucent glass card that looks amazing over dark background images */
         .glass-card {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(12px);
@@ -57,27 +64,90 @@
             color: #E0AAFF;
             text-shadow: 0 0 10px rgba(224, 170, 255, 0.5);
         }
+
+        /* Custom footer layout links style properties */
+        .footer-link {
+            color: #D8B4FE !important;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .footer-link:hover {
+            color: #FFFFFF !important;
+        }
     </style>
 </head>
 <body>
 
+<!-- NAVBAR FRAGMENT ROOT CONTAINER -->
 <nav th:fragment="navbar" class="navbar navbar-expand-lg bg-dark-purple shadow-sm mb-0">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/">🔮 BookVerse</a>
-        <div class="navbar-nav ms-auto">
+        <div class="navbar-nav ms-auto d-flex align-items-center gap-2">
+
+            <!-- GUEST SESSIONS LINKS -->
             <th:block th:if="${session.currentUser == null}">
                 <a class="nav-link" href="/users/login">Login</a>
                 <a class="nav-link" href="/users/register">Register</a>
             </th:block>
 
+            <!-- AUTHORIZED USER NAV SESSION MATRIX -->
             <th:block th:if="${session.currentUser != null}">
                 <a class="nav-link" href="/books/explore">🔭 Explore</a>
+                <a class="nav-link" href="/goals">🎯 Goals</a>
+                <a class="nav-link" href="/shelves">🪐 My Shelves</a>
                 <a class="nav-link" href="/reviews/new" style="color: #E0AAFF !important; font-weight: bold;">✍️ Write Review</a>
                 <a class="nav-link" href="/users/logout">🌀 Log out</a>
             </th:block>
+
         </div>
     </div>
 </nav>
+
+
+<!-- NEW BOTTOM MATTE FOOTER GRID PATTERN (References image_9d0e04.jpg) -->
+<footer th:fragment="footer" class="bg-dark-purple text-white pt-5 pb-3 mt-auto shadow-lg">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Column 1: Brand & Mission Statement Blurb -->
+            <div class="col-md-4">
+                <h5 class="fw-bold mb-3" style="color: #E0AAFF;">🔮 BookVerse</h5>
+                <p class="small opacity-75 pe-md-4" style="line-height: 1.6;">
+                    Explore cosmic catalogs, manifest structural reading goals, and curate your personal library spaces across the shared reading cosmos.
+                </p>
+            </div>
+
+            <!-- Column 2: Application Fast Navigation Links Map -->
+            <div class="col-md-4">
+                <h5 class="fw-bold mb-3" style="color: #E0AAFF;">Navigation</h5>
+                <ul class="list-unstyled d-flex flex-column gap-2 small">
+                    <li><a href="/" class="footer-link">🏠 Home Universe</a></li>
+                    <li><a href="/books/explore" class="footer-link">🔭 Explore Catalog</a></li>
+                    <li><a href="/goals" class="footer-link">🎯 Reading Goals</a></li>
+                    <li><a href="/shelves" class="footer-link">🪐 My Personal Shelves</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Contact & Project Reference Channels -->
+            <div class="col-md-4">
+                <h5 class="fw-bold mb-3" style="color: #E0AAFF;">Contact Support</h5>
+                <ul class="list-unstyled d-flex flex-column gap-2 small opacity-90">
+                    <li>📧 Email: <a href="mailto:support@bookverse.com" class="footer-link d-inline">support@bookverse.com</a></li>
+                    <li>🪐 Network: Cosmic Cloud Infrastructure</li>
+                    <li>📍 Location: Localhost Terminal Studio</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Partition Line and Under-Bar Copyright Identity Matrix -->
+        <hr class="my-4 opacity-25" style="border-color: #D8B4FE;">
+
+        <div class="text-center small opacity-50">
+            <p class="m-0">&copy; 2026 BookVerse Platform. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

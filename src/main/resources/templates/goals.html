@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BookVerse - Active Goals & Challenges</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <div th:replace="~{fragments/layout :: head}"></div>
+    <style>
+        body {
+            /* Using the beautiful new deep purple canvas background */
+            background: #4C1D95 url('/images/back.avif') no-repeat center bottom fixed;
+            background-size: 100% 100%;
+        }
+        .goals-banner {
+            background: linear-gradient(135deg, rgba(76, 29, 149, 0.8) 0%, rgba(46, 16, 101, 0.85) 100%);
+            border-radius: 0 0 32px 32px;
+            backdrop-filter: blur(4px);
+        }
+        .dashboard-panel {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(243, 232, 255, 0.5);
+            border-radius: 20px;
+        }
+        .goal-card {
+            background: rgba(250, 245, 255, 0.85);
+            border: 1px solid #E9D5FF;
+            border-radius: 16px;
+        }
+        .progress {
+            height: 12px;
+            background-color: #EDE9FE;
+            border-radius: 20px;
+        }
+        .bg-pink {
+            background-color: #DB2777 !important;
+        }
+        .badge-completed {
+            background-color: #D1FAE5;
+            color: #065F46;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        // Smoothly hide/show parameter options depending on type choice selection
+        function toggleChallengeInputs() {
+            var type = document.getElementById("challengeType").value;
+            var countDiv = document.getElementById("numericTargetGroup");
+            var genreDiv = document.getElementById("genreTargetGroup");
+
+            if (type === "BOOKS_COUNT") {
+                countDiv.style.display = "block";
+                genreDiv.style.display = "none";
+            } else {
+                countDiv.style.display = "none";
+                genreDiv.style.display = "block";
+            }
+        }
+    </script>
+</head>
+<body onload="toggleChallengeInputs()">
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<!-- HERO PROFILE HEADER BANNER -->
+<div class="goals-banner text-white py-5 mb-5 shadow-sm">
+    <div class="container text-center py-3">
+        <h1 class="display-5 fw-bold mb-2">🎯 Active Cosmic Goals</h1>
+        <p class="lead opacity-90 mx-auto" style="max-width: 600px;">
+            Set reading milestones, track your turning pages, and unlock cosmic accomplishments.
+        </p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row g-4">
+
+        <!-- COLUMN 1: GOAL CREATION FORM PANEL -->
+        <div class="col-lg-4">
+            <div class="dashboard-panel p-4 shadow-sm">
+                <h4 class="fw-bold mb-3" style="color: #4C1D95;">✨ Manifest New Goal</h4>
+                <form th:action="@{/goals/create}" method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Goal Title</label>
+                        <input type="text" name="title" class="form-control form-control-sm rounded-3" placeholder="e.g., Summer Reading Sprint" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Description</label>
+                        <textarea name="description" class="form-control form-control-sm rounded-3" rows="2" placeholder="Describe your reading target..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Challenge Strategy</label>
+                        <select name="challengeType" id="challengeType" class="form-select form-select-sm rounded-3" onchange="toggleChallengeInputs()" required>
+                            <option value="BOOKS_COUNT">📊 Quantitative (Book Volume Count)</option>
+                            <option value="GENRE_MATCH">🔮 Qualitative (Specific Genre Conquest)</option>
+                        </select>
+                    </div>
+
+                    <!-- Quantitative Dynamic Field Condition -->
+                    <div class="mb-3" id="numericTargetGroup">
+                        <label class="form-label small fw-bold text-secondary">Target Book Count</label>
+                        <input type="number" name="targetCount" min="1" value="5" class="form-control form-control-sm rounded-3">
+                    </div>
+
+                    <!-- Qualitative Dynamic Field Condition -->
+                    <div class="mb-3" id="genreTargetGroup" style="display:none;">
+                        <label class="form-label small fw-bold text-secondary">Target Genre Track</label>
+                        <input type="text" name="targetGenre" class="form-control form-control-sm rounded-3" placeholder="e.g., Romance, Sci-Fi, History">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-secondary">Target Deadline</label>
+                        <input type="date" name="expiryDate" class="form-control form-control-sm rounded-3">
+                    </div>
+
+                    <button type="submit" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill py-2 shadow-sm">Launch Goal</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: ACTIVE PROGRESS TRACK MATRIX -->
+        <div class="col-lg-8">
+            <div class="dashboard-panel p-4 shadow-sm h-100">
+                <h4 class="fw-bold mb-4" style="color: #3B0764;">💫 Reading Progress Gauge</h4>
+
+                <!-- Empty State Fallback -->
+                <div class="text-center py-5" th:if="${#lists.isEmpty(challenges)}">
+                    <p class="text-muted m-0">No cosmic milestones running right now. Choose a challenge strategy to initiate a tracker! 🔭</p>
+                </div>
+
+                <!-- Iteration Loop over Active Challenges -->
+                <div class="row g-3" th:if="${!#lists.isEmpty(challenges)}">
+                    <div class="col-12" th:each="goal : ${challenges}">
+                        <div class="card goal-card p-4 shadow-sm border-0">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="fw-bold mb-1" style="color: #4C1D95;" th:text="${goal.title}">Goal Title</h5>
+                                    <p class="text-secondary small mb-2" th:text="${goal.description}">Goal description...</p>
+                                </div>
+                                <!-- Dynamic Completion Badge Status -->
+                                <span class="badge badge-completed px-3 py-1 rounded-pill small shadow-sm" th:if="${goal.isCompleted}">🏆 Achieved</span>
+                                <span class="badge text-purple px-3 py-1 rounded-pill small font-weight-bold" style="background-color: #F3E8FF;" th:if="${!goal.isCompleted}">⚡ Tracking</span>
+                            </div>
+
+                            <!-- Dynamic Page Counter Fractions -->
+                            <div class="d-flex justify-content-between align-items-center small mb-1">
+                                <span class="text-muted" th:if="${goal.expiryDate != null}" th:text="|Deadline: ${goal.expiryDate}|">Deadline Date</span>
+                                <span class="text-muted" th:if="${goal.expiryDate == null}">Endless Cosmos Journey</span>
+                                <strong style="color: #3B0764;" th:text="${goal.currentProgress + ' / ' + goal.targetCount + ' books completed'}">0 / 5 books</strong>
+                            </div>
+
+                            <!-- Custom Pink Progress Meter Gauge -->
+                            <div class="progress shadow-sm">
+                                <div class="progress-bar bg-pink progress-bar-striped progress-bar-animated"
+                                     role="progressbar"
+                                     th:style="'width: ' + (${goal.currentProgress} * 100 / ${goal.targetCount}) + '%'"
+                                     th:aria-valuenow="${goal.currentProgress}"
+                                     th:aria-valuemin="0"
+                                     th:aria-valuemax="${goal.targetCount}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

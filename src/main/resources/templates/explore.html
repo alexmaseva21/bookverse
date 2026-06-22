@@ -5,17 +5,37 @@
     <title>BookVerse - Explore Catalog</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <div th:replace="~{fragments/layout :: head}"></div>
+    <style>
+        body {
+            /* Smooth deep purple fallback with a smart custom fit to keep back.avif crisp */
+            background: #4C1D95 url('/images/back.avif') no-repeat center bottom fixed;
+            background-size: 100% 100%;
+        }
+        /* Frosty glass look so cards blend beautifully over the artwork */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(233, 213, 255, 0.6) !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(76, 29, 149, 0.25) !important;
+        }
+    </style>
 </head>
-<body style="background-color: #FAF5FF;">
+<body>
 
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
 <div class="container my-5">
-    <div class="text-center mb-5">
-        <h1 class="fw-bold" style="color: #4C1D95;">🔭 Cosmic Book Catalog</h1>
-        <p class="text-muted">Discover new genres, read synopses, and expand your horizons.</p>
+    <!-- Header banner floating gracefully over back.avif -->
+    <div class="text-center mb-5 text-white bg-dark bg-opacity-25 py-4 rounded-4 backdrop-blur shadow-sm">
+        <h1 class="fw-bold m-0" style="color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🔭 Cosmic Book Catalog</h1>
+        <p class="text-white-50 m-0 mt-2 fw-medium">Discover new genres, read synopses, and expand your horizons.</p>
     </div>
 
+    <!-- Search Form Area -->
     <div class="row justify-content-center mb-5">
         <div class="col-md-6">
             <form th:action="@{/books/explore}" method="GET" class="d-flex gap-2">
@@ -25,9 +45,10 @@
         </div>
     </div>
 
+    <!-- Dynamic Book Cards Grid -->
     <div class="row g-4">
         <div class="col-md-4" th:each="book : ${allBooks}">
-            <div class="card h-100 border-0 shadow-sm p-4 rounded-4" style="background: white;">
+            <div class="card h-100 border-0 shadow-sm p-4 rounded-4 glass-card">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="badge px-3 py-1 rounded-pill"
                           style="background-color: #F3E8FF; color: #6D28D9; font-weight: 600;"
@@ -35,12 +56,14 @@
                 </div>
                 <h4 class="fw-bold mb-1" style="color: #3B0764;" th:text="${book.title}">Book Title</h4>
                 <p class="text-muted small mb-3">By <span class="fw-semibold text-secondary" th:text="${book.author}">Author Name</span></p>
-                <p class="text-secondary small flex-grow-1" th:text="${book.description}">Short book summary description goes right over here...</p>
+                <p class="text-secondary small flex-grow-1" th:text="${book.description}">Short book summary description...</p>
 
                 <div class="mt-3 pt-3 border-top flex-column d-flex gap-2">
+                    <!-- Dynamic Review Path Link -->
                     <a th:href="@{/reviews/new(bookId=${book.id})}" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill">✍️ Review</a>
 
-                    <form th:action="@{/shelves/add}" method="POST" class="w-100">
+                    <!-- Connected Add to Shelf Form Selector (Synchronized Moon Emojis) -->
+                    <form th:action="@{/shelves/add}" method="POST" class="w-100 m-0">
                         <input type="hidden" name="bookId" th:value="${book.id}">
                         <div class="input-group input-group-sm">
                             <select name="status" class="form-select rounded-start-pill text-muted small" required>
@@ -57,6 +80,6 @@
         </div>
     </div>
 </div>
-
+<footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
 </html>

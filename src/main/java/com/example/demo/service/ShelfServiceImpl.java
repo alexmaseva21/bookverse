@@ -21,11 +21,17 @@ public class ShelfServiceImpl implements ShelfService {
     private final ShelfRepository shelfRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final ChallengeService challengeService;
 
-    public ShelfServiceImpl(ShelfRepository shelfRepository, UserRepository userRepository, BookRepository bookRepository) {
+    // Fully integrated constructor injection with our new goal sync engine
+    public ShelfServiceImpl(ShelfRepository shelfRepository,
+                            UserRepository userRepository,
+                            BookRepository bookRepository,
+                            ChallengeService challengeService) {
         this.shelfRepository = shelfRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.challengeService = challengeService;
     }
 
     @Override
@@ -52,6 +58,9 @@ public class ShelfServiceImpl implements ShelfService {
             newItem.setStatus(status);
             shelfRepository.save(newItem);
         }
+
+        // Automatically recalculate and sync challenge progress bars in real time
+        challengeService.syncUserChallengeProgress(username);
     }
 
     @Override
@@ -71,5 +80,8 @@ public class ShelfServiceImpl implements ShelfService {
 
         shelfRepository.findByUserAndBookId(user, bookId)
                 .ifPresent(shelfRepository::delete);
+
+        // Recalculate progress bars in case a completed book was removed from their collection
+        challengeService.syncUserChallengeProgress(username);
     }
 }
