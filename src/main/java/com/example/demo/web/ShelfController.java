@@ -77,4 +77,17 @@ public class ShelfController {
         shelfService.removeBookFromShelf(bookId, username);
         return "redirect:/shelves";
     }
+    // Handles shifting a book seamlessly to a different shelf
+    @PostMapping("/update-status")
+    public String updateBookStatus(@RequestParam("bookId") UUID bookId,
+                                   @RequestParam("status") ReadingStatus status,
+                                   HttpSession session) {
+        String username = (String) session.getAttribute("currentUser");
+        if (username == null) {
+            return "redirect:/users/login";
+        }
+
+        shelfService.addOrUpdateBookStatus(bookId, username, status);
+        return "redirect:/shelves";
+    }
 }
