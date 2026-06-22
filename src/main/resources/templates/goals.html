@@ -62,7 +62,6 @@
 
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-<!-- HERO PROFILE HEADER BANNER -->
 <div class="goals-banner text-white py-5 mb-5 shadow-sm">
     <div class="container text-center py-3">
         <h1 class="display-5 fw-bold mb-2">🎯 Active Cosmic Goals</h1>
@@ -75,45 +74,46 @@
 <div class="container mb-5">
     <div class="row g-4">
 
-        <!-- COLUMN 1: GOAL CREATION FORM PANEL -->
         <div class="col-lg-4">
             <div class="dashboard-panel p-4 shadow-sm">
                 <h4 class="fw-bold mb-3" style="color: #4C1D95;">✨ Manifest New Goal</h4>
-                <form th:action="@{/goals/create}" method="POST">
+                <form th:action="@{/goals/create}" th:object="${challengeDTO}" method="POST">
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Goal Title</label>
-                        <input type="text" name="title" class="form-control form-control-sm rounded-3" placeholder="e.g., Summer Reading Sprint" required>
+                        <input type="text" th:field="*{title}" class="form-control form-control-sm rounded-3" placeholder="e.g., Summer Reading Sprint">
+                        <small class="text-danger fw-semibold d-block mt-1" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></small>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Description</label>
-                        <textarea name="description" class="form-control form-control-sm rounded-3" rows="2" placeholder="Describe your reading target..."></textarea>
+                        <textarea th:field="*{description}" class="form-control form-control-sm rounded-3" rows="2" placeholder="Describe your reading target..."></textarea>
+                        <small class="text-danger fw-semibold d-block mt-1" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-secondary">Challenge Strategy</label>
-                        <select name="challengeType" id="challengeType" class="form-select form-select-sm rounded-3" onchange="toggleChallengeInputs()" required>
+                        <select th:field="*{challengeType}" id="challengeType" class="form-select form-select-sm rounded-3" onchange="toggleChallengeInputs()" required>
                             <option value="BOOKS_COUNT">📊 Quantitative (Book Volume Count)</option>
                             <option value="GENRE_MATCH">🔮 Qualitative (Specific Genre Conquest)</option>
                         </select>
                     </div>
 
-                    <!-- Quantitative Dynamic Field Condition -->
                     <div class="mb-3" id="numericTargetGroup">
                         <label class="form-label small fw-bold text-secondary">Target Book Count</label>
-                        <input type="number" name="targetCount" min="1" value="5" class="form-control form-control-sm rounded-3">
+                        <input type="number" th:field="*{targetCount}" min="1" class="form-control form-control-sm rounded-3">
                     </div>
 
-                    <!-- Qualitative Dynamic Field Condition -->
                     <div class="mb-3" id="genreTargetGroup" style="display:none;">
                         <label class="form-label small fw-bold text-secondary">Target Genre Track</label>
-                        <input type="text" name="targetGenre" class="form-control form-control-sm rounded-3" placeholder="e.g., Romance, Sci-Fi, History">
+                        <input type="text" th:field="*{targetGenre}" class="form-control form-control-sm rounded-3" placeholder="e.g., Romance, Sci-Fi, History">
+                        <small class="text-danger fw-semibold d-block mt-1" th:if="${#fields.hasErrors('targetGenre')}" th:errors="*{targetGenre}"></small>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label small fw-bold text-secondary">Target Deadline</label>
-                        <input type="date" name="expiryDate" class="form-control form-control-sm rounded-3">
+                        <input type="date" th:field="*{expiryDate}" class="form-control form-control-sm rounded-3">
+                        <small class="text-danger fw-semibold d-block mt-1" th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}"></small>
                     </div>
 
                     <button type="submit" class="btn btn-purple btn-sm w-100 fw-bold rounded-pill py-2 shadow-sm">Launch Goal</button>
@@ -121,17 +121,14 @@
             </div>
         </div>
 
-        <!-- COLUMN 2: ACTIVE PROGRESS TRACK MATRIX -->
         <div class="col-lg-8">
             <div class="dashboard-panel p-4 shadow-sm h-100">
                 <h4 class="fw-bold mb-4" style="color: #3B0764;">💫 Reading Progress Gauge</h4>
 
-                <!-- Empty State Fallback -->
                 <div class="text-center py-5" th:if="${#lists.isEmpty(challenges)}">
                     <p class="text-muted m-0">No cosmic milestones running right now. Choose a challenge strategy to initiate a tracker! 🔭</p>
                 </div>
 
-                <!-- Iteration Loop over Active Challenges -->
                 <div class="row g-3" th:if="${!#lists.isEmpty(challenges)}">
                     <div class="col-12" th:each="goal : ${challenges}">
                         <div class="card goal-card p-4 shadow-sm border-0">
@@ -140,19 +137,16 @@
                                     <h5 class="fw-bold mb-1" style="color: #4C1D95;" th:text="${goal.title}">Goal Title</h5>
                                     <p class="text-secondary small mb-2" th:text="${goal.description}">Goal description...</p>
                                 </div>
-                                <!-- Dynamic Completion Badge Status -->
                                 <span class="badge badge-completed px-3 py-1 rounded-pill small shadow-sm" th:if="${goal.isCompleted}">🏆 Achieved</span>
                                 <span class="badge text-purple px-3 py-1 rounded-pill small font-weight-bold" style="background-color: #F3E8FF;" th:if="${!goal.isCompleted}">⚡ Tracking</span>
                             </div>
 
-                            <!-- Dynamic Page Counter Fractions -->
                             <div class="d-flex justify-content-between align-items-center small mb-1">
                                 <span class="text-muted" th:if="${goal.expiryDate != null}" th:text="|Deadline: ${goal.expiryDate}|">Deadline Date</span>
                                 <span class="text-muted" th:if="${goal.expiryDate == null}">Endless Cosmos Journey</span>
                                 <strong style="color: #3B0764;" th:text="${goal.currentProgress + ' / ' + goal.targetCount + ' books completed'}">0 / 5 books</strong>
                             </div>
 
-                            <!-- Custom Pink Progress Meter Gauge -->
                             <div class="progress shadow-sm">
                                 <div class="progress-bar bg-pink progress-bar-striped progress-bar-animated"
                                      role="progressbar"
@@ -171,6 +165,8 @@
 
     </div>
 </div>
+
 <footer th:replace="~{fragments/layout :: footer}"></footer>
+
 </body>
 </html>

@@ -23,59 +23,80 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ModelAttribute("loginDTO")
-    public UserLoginDTO loginDTO() {
-        return new UserLoginDTO();
-    }
-
     @GetMapping("/login")
-    public String login() {
+    public String login(org.springframework.ui.Model model) {
+        // Guarantee the model has a clean binding object container if none leaked from flash redirect attributes
+        if (!model.containsAttribute("loginDTO")) {
+            model.addAttribute("loginDTO", new UserLoginDTO());
+        }
         return "login";
     }
 
-    // Handles data when clicking the "Log In" button
     @PostMapping("/login")
-    public String loginConfirm(@Valid UserLoginDTO loginDTO,
+    public String loginConfirm(@Valid @ModelAttribute("loginDTO") UserLoginDTO loginDTO,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes,
-                               HttpSession session) { // Tracks active browser login state
+                               HttpSession session) {
 
-        if (bindingResult.hasErrors() || !userService.login(loginDTO)) {
+        // Check format validations first (e.g., blank fields)
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("loginDTO", loginDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginDTO", bindingResult);
             return "redirect:/users/login";
         }
 
-        // Success! Stores the username session attribute for the index page banner to read
-        session.setAttribute("currentUser", loginDTO.getUsername());
+        // Try authentication check against database record
+        boolean loginSuccessful = userService.login(loginDTO);
+        if (!loginSuccessful) {
+            bindingResult.rejectValue("password", "error.loginDTO", "Invalid username or password match! 🌌");
+            redirectAttributes.addFlashAttribute("loginDTO", loginDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginDTO", bindingResult);
+            // Also flag a bad credentials helper token for legacy layout alerts
+            redirectAttributes.addFlashAttribute("badCredentials", true);
+            return "redirect:/users/login";
+        }
 
+        // Success! Stores user session reference properties
+        session.setAttribute("currentUser", loginDTO.getUsername());
         return "redirect:/";
     }
 
-    @ModelAttribute("registerDTO")
-    public UserRegisterDTO registerDTO() {
-        return new UserRegisterDTO();
-    }
-
     @GetMapping("/register")
-    public String register() {
+    public String register(org.springframework.ui.Model model) {
+        if (!model.containsAttribute("registerDTO")) {
+            model.addAttribute("registerDTO", new UserRegisterDTO());
+        }
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerConfirm(@Valid UserRegisterDTO registerDTO,
+    public String registerConfirm(@Valid @ModelAttribute("registerDTO") UserRegisterDTO registerDTO,
                                   BindingResult bindingResult,
                                   RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors() || !userService.register(registerDTO)) {
+        // Custom Business Logic Constraint: Passwords must match [cite: 62]
+        if (registerDTO.getPassword() != null && !registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "error.registerDTO", "Passwords do not match!");
+        }
+
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("registerDTO", registerDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDTO", bindingResult);
             return "redirect:/users/register";
         }
+
+        // Try persistence registration database hook
+        boolean registrationSuccessful = userService.register(registerDTO);
+        if (!registrationSuccessful) {
+            bindingResult.rejectValue("username", "error.registerDTO", "Username is already claimed in this galaxy!");
+            redirectAttributes.addFlashAttribute("registerDTO", registerDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerDTO", bindingResult);
+            return "redirect:/users/register";
+        }
+
         return "redirect:/users/login";
     }
 
-    // Clears out the user session variables when navigating to /users/logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
